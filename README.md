@@ -49,3 +49,28 @@ class Main{
     }
 }
 ```
+## 4 Prinsip dalam Pemrograman Berorientasi Objek
+Pemrograman berorientasi objek mempunyai 4 prinsip, yaitu *Encapsulation*, *Abstraction*, *Inheritance*, dan *Polymorphism*. Setiap bahasa pemrograman berorientasi objek harus mensupport 4 prinsip tersebut.
+
+### Encapsulation
+### Abstraction
+### Inheritance
+### Polymorphism
+
+## C#
+
+### Data hiding
+
+### class vs struct
+
+### Interface vs abstract class
+
+### Reference
+
+### Mengenal IEnumerable dan IEnumerator
+
+
+
+Sumber : 
+https://medium.com/from-the-scratch/oop-everything-you-need-to-know-about-object-oriented-programming-aee3c18e281b
+https://livebook.manning.com/book/c-sharp-in-depth-fourth-edition/chapter-2/367
