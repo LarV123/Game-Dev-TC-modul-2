@@ -42,8 +42,8 @@ class Player {
     }
 }
 
-class Main{
-    public static void main(String[] args){
+class Main : MonoBehaviour{
+    void Start(){
         Player player = new Player();
         player.Move(1, 1);
         ...
@@ -97,8 +97,8 @@ class Player{
     }
 }
 
-public class Main{
-    public static void main(String[] args){
+class Main : MonoBehaviour{
+    void Start(){
         Player player = new Player();
         Enemy enemy = new Enemy();
         player.Attack(enemy);
@@ -107,7 +107,7 @@ public class Main{
 ```
 
 ### Abstraction
-*Abstraction* adalah proses untuk menyembunyikan implementasi suatu fungsi, namun tetap memberikan fungsionalitas ke user. Dengan ini, programmer tidak perlu mengetahui cara kerja fungsi tersebut, hanya perlu tahu apa fungsi dari fungsi tersebut.
+*Abstraction* adalah proses untuk menyembunyikan implementasi suatu fungsi, namun tetap memberikan fungsionalitas ke user. Dengan ini, programmer tidak perlu mengetahui cara kerja fungsi tersebut, hanya perlu tahu apa kegunaan dari fungsi tersebut.
 Dalam *object oriented programming* sangat dianjurkan implementasi itu di implementasikan di class namun di definisikan di abstract class atau interface. Abstraksi sangat diperlukan untuk mengurangi detail yang perlu diketahui user.
 Contoh dalam mobil, ada pedal gas dan rem. Kita tidak mempedulikan bagaimana mobil menggerakkan mesinnya, tapi kita hanya peduli bahwa pedal gas kalau ditekan akan menggerakkan mobil kedepan.
 Contoh kode yang tidak mengimplementasi *abstraction* :
@@ -135,8 +135,8 @@ class Player{
     }
 }
 
-public class Main{
-    public static void main(String[] args){
+class Main : MonoBehaviour{
+    void Start(){
         Player player = new Player();
         Enemy enemy = new Enemy();
         player.Attack(enemy);
@@ -176,8 +176,8 @@ class Player{
     }
 }
 
-public class Main{
-    public static void main(String[] args){
+class Main : MonoBehaviour{
+    void Start(){
         Player player = new Player();
         Enemy enemy = new Enemy();
         player.Attack(enemy);
@@ -186,23 +186,254 @@ public class Main{
 ```
 ### Inheritance
 *Inheritance* adalah saat dimana satu class mendapatkan properti atau fungsi dari class parent atau class yang diturunkan. Konsep *inheritance* adalah seperti kucing dan anjing adalah mamalia. Dimana semua mamalia akan menyusui dan bernapas dengan paru-paru. Jika kucing dan anjing tidak *inherit* mamalia, maka kita harus menulis ulang fungsi-fungsi yang sama tadi.
-Jadi tujuan utama inheritance adalah mengurangi *code duplication*. Akan tetapi dengan adanya inheritance harus dipahami juga bahwa akan ada dependency antara child class dan parent class. Jadi inheritance harus d
-### Polymorphism
+Jadi tujuan utama inheritance adalah mengurangi *code duplication*. Akan tetapi dengan adanya inheritance harus dipahami juga bahwa akan ada dependency antara child class dan parent class. Jadi inheritance harus digunakan sebaik-baiknya. Misal contoh inheritance yang kurang baik :
+![thread](img/inheritance.png)
 
+contoh kode yang tidak mengimplementasi *inheritance* :
+```
+
+class Orc : Enemy {
+    protected int health;
+    protected int attackPoint;
+
+    public Orc(){
+        health = 5;
+        attackPoint = 2;
+    }
+
+    public void Attack(Player player){
+        player.Damaged(attackPoint);
+    }
+
+    public void Damaged(int damage){
+        health -= damage;
+    }
+
+}
+
+class Elf : Enemy {
+
+    protected int health;
+    protected int attackPoint;
+
+    public Elf(){
+        health = 2;
+        attackPoint = 3;
+    }
+
+    public void Attack(Player player){
+        player.Damaged(attackPoint);
+    }
+
+    public void Damaged(int damage){
+        health -= damage;
+    }
+
+}
+
+```
+
+contoh kode yang mengimplementasi *inheritance* :
+```
+abstract class Enemy {
+    protected int health;
+    protected int attackPoint;
+
+    public void Attack(Player player){
+        player.Damaged(attackPoint);
+    }
+
+    public void Damaged(int damage){
+        health -= damage;
+    }
+}
+
+class Orc : Enemy {
+
+    public Orc(){
+        health = 5;
+        attackPoint = 2;
+    }
+
+}
+
+class Elf : Enemy {
+
+    public Elf(){
+        health = 2;
+        attackPoint = 3;
+    }
+
+}
+
+```
+### Polymorphism
+Polymorphism berarti berbagai bentuk. Suatu objek dalam *object oriented programming* dapat dilihat sebagai beberapa bentuk. Bentuk polymorphism dapat dilihat di dunia nyata. Misalkan ayam merupakan unggas dan ovipar. Ayam dapat dilihat hanya sebagai ovipar saja dan kita tahu bahwa semua yang ovipar bisa bertelur, jadi objek tersebut bisa bertelur.
+Saat suatu class meng-*extend* class lain atau meng-*implement* beberapa interface. Maka class tersebut akan bisa disimpan dalam bentuk class atau interface tersebut.
+```
+interface IDamageable{
+    void Damaged(float damage);
+}
+
+abstract class Enemy : IDamageable {
+
+    private float attackPoint;
+    private float health;
+
+    public abstract void Move();
+
+    public void Attack(IDamageable other){
+        other.Damaged(attackPoint);
+    }
+
+    public void Damaged(float damage){
+        health -= damage;
+    }
+}
+
+class Orc : Enemy {
+
+    public Orc(){
+        health = 5;
+        attackPoint = 2;
+    }
+
+    public void Move(){
+        //lari
+    }
+
+}
+
+class Bat : Enemy {
+
+    public Bat(){
+        health = 2;
+        attackPoint = 3;
+    }
+
+    public void Move(){
+        //terbang
+    }
+
+}
+
+class Main : MonoBehaviour{
+
+    void Start(){
+        Enemy enemy1 = new Bat();
+        Bat bat = (Bat)enemy1;
+        enemy1.Move();
+        ((IDamageable) bat).Damaged(1);
+        enemy1 = new Orc();
+    }
+
+}
+```
 
 ## C#
+Bahasa yang akan digunakan dalam Unity adalah C#. Jadi kali ini kita akan belajar bahasa C# dan bagaimana mengimplementasi OOP dalam C#.
 
-### class vs struct
+### class dan object
+Class adalah template suatu object. Sedangkan object adalah *instance* dari sebuah class. Dalam class, kita mendefinisikan variabel dan fungsi yang ada dalam class tersebut. Sedangkan, object adalah *instance* dari class yang merupakan hasil pembuatan di memory.
+Untuk mendefinisikan class, kita menggunakan keyword ```class```. Dilanjutkan dengan nama class tersebut lalu curly bracket.
+```
+public class NamaClass {
+    private int variabel1;
+    private float variabel2;
+    public string variabel3;
 
-### Object
+    private void Fungsi1(){
 
-### Data hiding
+    }
+    protected void Fungsi2(){
 
-### Interface vs abstract class
+    }
+    public void Fungsi3(){
+
+    }
+}
+```
+Dalam class, kita dapat mendefinisikan properti dan method. Untuk setiap object yang dibuat dengan template NamaClass, akan mempunyai fungsi dan variabel tersebut. Untuk membuat sebuah objek kita harus memanggil constructor atau memanggil ```new NamaClass(param)```.
+
+### constructor
+Constructor adalah blok kode yang akan dieksekusi saat pembuatan *instance* suatu class. Nama constructor harus sama dengan nama class dengan access modifier public. Class dapat mempunyai lebih dari satu constructor asalkan mempunyai parameter yang berbeda.
+```
+class ContohClass {
+    public ContohClass(){
+        //kode ini akan dijalankan saat menggunakan new ContohClass()
+    }
+    public ContohClass(int angka){
+        //kode ini akan dijalankan saat menggunakan new ContohClass(int)
+    }
+}
+```
+
+### access modifier
+Untuk mengimplementasi *abstraction* dan *encapsulation*, kita harus bisa memberikan modifier pada variabel dan method. Semua method dan variabel dapat diberi keyword untuk memodifikasi dari mana properti tersebut dapat diakses.
+
+#### private
+variabel dan fungsi hanya dapat diakses di dalam class sendiri.
+```
+class Contoh{
+    private int test;
+    private void testFunc(){
+
+    }
+}
+```
+
+#### protected
+variabel dan fungsi dapat diakses di dalam class sendiri dan child classnya.
+```
+class Contoh{
+    protected int test;
+    protected void testFunc(){
+
+    }
+}
+```
+
+#### public
+variabel dan fungsi dapat diakses di class manapun.
+```
+class Contoh{
+    public int test;
+    public void testFunc(){
+
+    }
+}
+```
+
+#### static
+Variabel dan fungsi dengan kata kunci static tidak terikat oleh object. Jadi akan selalu dialokasikan saat program mulai. Variabel static dapat mempunyai modifier public, protected, dan private. Untuk mengakses variable static, dapat menggunakan ```NamaClass.namaVariabel```
 
 ### Reference
+Setiap object dalam c# akan ditunjuk menggunakan referensi.
 
-### Mengenal IEnumerable dan IEnumerator
+### Inheritance
+
+### Interface vs abstract class
+Abstract class adalah class yang tidak dapat dibuat *instance*-nya. Karena ada method yang dibuat abstract. Method abstract adalah method dimana kita hanya mendefinisikan prototype fungsinya. Untuk membuat *instance*-nya kita harus menurunkan ke class yang akan mengimplementasikan fungsi tersebut.
+```
+abstract class Shape{
+    public abstract float GetLuas();
+}
+
+class Segitiga : Shape{
+    private float alas;
+    private float tinggi;
+
+    public Segitiga(float alas, float tinggi){
+        this.alas = alas;
+        this.tinggi = tinggi;
+    }
+
+    public float GetLuas(){
+        return alas * tinggi / 2;
+    }
+
+}
+```
 
 
 
