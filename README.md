@@ -406,13 +406,92 @@ class Contoh{
 
 #### static
 Variabel dan fungsi dengan kata kunci static tidak terikat oleh object. Jadi akan selalu dialokasikan saat program mulai. Variabel static dapat mempunyai modifier public, protected, dan private. Untuk mengakses variable static, dapat menggunakan ```NamaClass.namaVariabel```
+```
+Class ClassA {
+    public static int staticVar = 0;
+    private static int classInstanceCount = 0;
+
+    public ClassA(){
+        classInstanceCount++;
+    }
+
+    public static void ShowInstanceCount(){
+        Debug.Log(classInstanceCount);
+    }
+}
+
+class Main : MonoBehaviour{
+    void Start(){
+        Debug.Log(ClassA.staticVar);
+        ClassA.ShowInstanceCount();
+        ClassA c = new ClassA();
+        ClassA.ShowInstanceCount();
+    }
+}
+```
 
 ### Reference
-Setiap object dalam c# akan ditunjuk menggunakan referensi.
+Setiap object dalam c# akan ditunjuk menggunakan referensi. Referensi tersebut akan di-*return* saat kita membuat objek baru. Dalam kode berikut, hanya ada 1 objek saja.
+```
+class ExampleClass{
+    public int number;
+}
+class Main : MonoBehaviour{
+    void Start{
+        ExampleClass varA = new ExampleClass();
+        varA.number = 1;
+        ExampleClass varB = varA;
+        Debug.Log(varA.number + " " + varB.number);
+        varB.number = 2;
+        Debug.Log(varA.number + " " + varB.number);
+    }
+}
+```
+Dapat dicoba, maka output dari program tersebut adalah 1 1 dan 2 2. Itu dikarenakan varA dan varB mereferensikan ke object yang sama.
 
 ### Inheritance
+Untuk meng-*extend* atau meng-*implementasi* dalam C# dapat menggunakan symbol ```:``` dan untuk memisahkan interface dengan class. Untuk semua fungsi dan variabel class yang ada di parent class pasti akan diturunkan ke child class. Akan tetapi private variabel yang ada di parent class tidak akan bisa diakses secara langsung oleh child class. Selain itu, kita juga bisa melakukan Method overriding.
 
-### Interface vs abstract class
+#### Method Overriding
+Dalam inheritance, mungkin kita mau child class melakukan sesuatu yang berbeda pada suatu fungsi yang ada di parent class. Kita bisa meng-*override* atau mengganti fungsi yang ada di parent class. Dengan ini pada fungsi yang sama akan melakukan hal yang berbeda pada fungsi yang di override. Fungsi yang di-*override* harus mempunyai keyword virtual di fungsinya.
+
+```
+class ParentClass{
+    public virtual void Function1(){
+        Debug.Log("Parent Class function 1");
+    }
+
+    public virtual void Function2(){
+        Debug.Log("Parent Class function 2");
+    }
+}
+
+class ChildClass : ParentClass{
+    public override void Function1(){
+        Debug.Log("Child Class function 1");
+    }
+
+    public override void Function2(){
+        base.Function2();
+        Debug.Log("Child Class function 2");
+    }
+}
+
+class Main : MonoBehaviour{
+    void Start{
+        ChildClass child = new ChildClass();
+        child.Function1();
+        child.Function2();
+        ParentClass parentVar = child;
+        parentVar.Function1();
+        parentVar = new ParentClass();
+        parentVar.Function1();
+        parentVar.Function2();
+    }
+}
+```
+
+### interface vs abstract class
 Abstract class adalah class yang tidak dapat dibuat *instance*-nya. Karena ada method yang dibuat abstract. Method abstract adalah method dimana kita hanya mendefinisikan prototype fungsinya. Untuk membuat *instance*-nya kita harus menurunkan ke class yang akan mengimplementasikan fungsi tersebut.
 ```
 abstract class Shape{
@@ -434,7 +513,49 @@ class Segitiga : Shape{
 
 }
 ```
+Akan tetapi, dalam C# inheritance class hanya dibatasi dari 1 parent class saja. Jadi tidak ada class yang mempunyai 2 parent class.
+Interface adalah kumpulan prototype fungsi public yang dapat diimplementasi di class. Interface digunakan untuk mengelompokkan perilaku-perilaku yang sama antar class yang tidak bisa di taruh di parent class. Interface digunakan sebagai abstraksi method karena semua fungsi dalam interface sudah pasti public. Contoh penggunaan interface adalah sebagai berikut.
+```
+interface IDamageable{
+    void Damaged(float damage);
+}
 
+class Tembok : IDamageable{
+    private int health;
+
+    public void Damaged(float damage){
+        health -= damage;
+        Debug.Log(health);
+    }
+}
+
+class Enemy : IDamageable {
+    private int health;
+
+    public void Damaged(float damage){
+        health -= damage;
+        Debug.Log(health);
+    }
+}
+
+class Player {
+    private int damage;
+
+    public void Attack(IDamageable damageable){
+        damageable.Damaged(damage);
+    }
+}
+
+class Main : MonoBehaviour {
+    void Start(){
+        Player player = new Player();
+        Enemy enemy = new Enemy();
+        Tembok tembok = new Tembok();
+        player.Attack(enemy);
+        player.Attack(tembok);
+    }
+}
+```
 
 
 Sumber : 
